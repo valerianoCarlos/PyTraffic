@@ -1,7 +1,4 @@
 class IntersectionModel:
-    """
-    Class to represent a simple intersection model that manages 4 traffic lights
-    """
     def __init__(self):
         self.traffic_lights = {
             'north': 'red',

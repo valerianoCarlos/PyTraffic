@@ -21,15 +21,15 @@ class IntersectionSim(mosaik_api_v3.Simulator):
         self.time = 0
 
     def init(self, sid, time_resolution):
-        if float(time_resolution) != 1.:
+        if time_resolution != 1:
             raise ValueError('IntersectionSim only supports time_resolution=1., but %s was set.' % time_resolution)
         return self.meta
 
     def create(self, num, model):
-        next_eid = len(self.intersection_entities)
+        n_intersections = len(self.intersection_entities)
         entities = []
 
-        for i in range(next_eid, next_eid + num):
+        for i in range(n_intersections, n_intersections + num):
             model_instance = intersection_model.IntersectionModel()
             eid = '%s%d' % (self.eid_prefix, i)
             self.intersection_entities[eid] = model_instance
