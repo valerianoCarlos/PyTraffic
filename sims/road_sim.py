@@ -6,8 +6,8 @@ META = {
     'models': {
         'RoadModel': {
             'public': True,
-            'params': ['from_direction'],
-            'attrs': ['traffic_lights_in'],
+            'params': ['from_direction', 'num_vehicles'],
+            'attrs': ['traffic_lights_in', 'num_vehicles'],
         },
     },
 }
@@ -20,11 +20,11 @@ class RoadSim(mosaik_api_v3.Simulator):
         self.road_entities = {}
         self.time = 0
 
-    def create(self, num, model, from_direction):
+    def create(self, num, model, from_direction, num_vehicles):
         n_roads = len(self.road_entities)
         entities = []
         for i in range(n_roads, n_roads + num):
-            model_instance = road_model.RoadModel(from_direction)
+            model_instance = road_model.RoadModel(from_direction, num_vehicles)
             eid = '%s%d' % (self.eid_prefix, i)
             self.road_entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
@@ -50,11 +50,13 @@ class RoadSim(mosaik_api_v3.Simulator):
     def get_data(self, outputs):
         data = {}
         for eid, attrs in outputs.items():
+            model = self.road_entities[eid]
+            data['time'] = self.time
+            data[eid] = {}
             for attr in attrs:
-                if attr != 'traffic_lights_in':
-                    raise ValueError('Unknown output attribute "%s"' % attr)
-                if eid in self.data:
-                    data['time'] = self.time
-                    data.setdefault(eid, {})[attr] = self.data[eid][attr]
+                if attr not in self.meta['models']['RoadModel']['attrs']:
+                    raise ValueError('Unknown output attribute: %s' % attr)
+                
+                data[eid][attr] = getattr(model, attr)
 
         return data

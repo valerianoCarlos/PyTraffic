@@ -44,7 +44,7 @@ class Collector(mosaik_api_v3.Simulator):
         return None
 
     def finalize(self):
-        output_file = 'collected_data.json'  # Name of the output file
+        output_file = 'data/collected_data.json'  # Name of the output file
         with open(output_file, 'w') as f:
             json.dump(self.data, f, indent=4)
         print(f'Collected data written to {output_file}')
