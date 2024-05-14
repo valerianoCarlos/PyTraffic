@@ -17,7 +17,7 @@ class IntersectionSim(mosaik_api_v3.Simulator):
     def __init__(self):
         super().__init__(META)
         self.eid_prefix = 'Intersection_'
-        self.intersection_entities = {}
+        self.entities = {}
         self.time = 0
 
     def init(self, sid, time_resolution):
@@ -26,20 +26,21 @@ class IntersectionSim(mosaik_api_v3.Simulator):
         return self.meta
 
     def create(self, num, model):
-        n_intersections = len(self.intersection_entities)
+        n_entities = len(self.entities)
         entities = []
 
-        for i in range(n_intersections, n_intersections + num):
-            model_instance = intersection_model.IntersectionModel()
+        for i in range(n_entities, n_entities + num):
             eid = '%s%d' % (self.eid_prefix, i)
-            self.intersection_entities[eid] = model_instance
+            model_instance = intersection_model.IntersectionModel(eid)
+            # print(model_instance)
+            self.entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
 
         return entities
 
     def step(self, time, inputs, max_advance):
         self.time = time
-        for eid, model_instance in self.intersection_entities.items():
+        for eid, model_instance in self.entities.items():
             model_instance.step(time)
 
         return time + 1
@@ -47,7 +48,7 @@ class IntersectionSim(mosaik_api_v3.Simulator):
     def get_data(self, outputs):
         data = {}
         for eid, attrs in outputs.items():
-            model = self.intersection_entities[eid]
+            model = self.entities[eid]
             data['time'] = self.time
             data[eid] = {}
             for attr in attrs:

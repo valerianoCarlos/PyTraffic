@@ -1,38 +1,386 @@
 {
-  "Vehicle_0": ["left", "left", "right", "right", "right"],
-  "Vehicle_1": ["straight", "right", "left", "left", "straight"],
-  "Vehicle_2": ["left", "straight", "left", "straight", "left"],
-  "Vehicle_3": ["straight", "right", "left", "right", "right"],
-  "Vehicle_4": ["right", "straight", "left", "left", "left"],
-  "Vehicle_5": ["left", "left", "straight", "straight", "right"],
-  "Vehicle_6": ["right", "left", "straight", "right", "straight"],
-  "Vehicle_7": ["left", "right", "right", "right", "left"],
-  "Vehicle_8": ["right", "straight", "straight", "left", "right"],
-  "Vehicle_9": ["straight", "right", "right", "right", "right"],
-  "Vehicle_10": ["left", "straight", "straight", "right", "right"],
-  "Vehicle_11": ["straight", "left", "left", "right", "left"],
-  "Vehicle_12": ["right", "left", "straight", "left", "right"],
-  "Vehicle_13": ["straight", "left", "straight", "straight", "straight"],
-  "Vehicle_14": ["right", "left", "straight", "left", "right"],
-  "Vehicle_15": ["right", "left", "right", "left", "right"],
-  "Vehicle_16": ["right", "right", "right", "right", "right"],
-  "Vehicle_17": ["right", "straight", "left", "right", "left"],
-  "Vehicle_18": ["straight", "right", "left", "straight", "straight"],
-  "Vehicle_19": ["left", "left", "left", "straight", "left"],
-  "Vehicle_20": ["right", "straight", "right", "right", "straight"],
-  "Vehicle_21": ["straight", "right", "right", "straight", "right"],
-  "Vehicle_22": ["left", "straight", "straight", "right", "left"],
-  "Vehicle_23": ["right", "straight", "right", "right", "left"],
-  "Vehicle_24": ["left", "straight", "right", "straight", "straight"],
-  "Vehicle_25": ["left", "right", "right", "straight", "left"],
-  "Vehicle_26": ["left", "right", "left", "right", "right"],
-  "Vehicle_27": ["left", "right", "straight", "left", "left"],
-  "Vehicle_28": ["straight", "left", "right", "straight", "right"],
-  "Vehicle_29": ["right", "right", "straight", "right", "left"],
-  "Vehicle_30": ["straight", "straight", "right", "straight", "right"],
-  "Vehicle_31": ["left", "right", "straight", "right", "straight"],
-  "Vehicle_32": ["straight", "left", "straight", "straight", "right"],
-  "Vehicle_33": ["right", "straight", "right", "right", "right"],
-  "Vehicle_34": ["left", "right", "left", "straight", "left"],
-  "Vehicle_35": ["straight", "left", "right", "left", "right"]
+    "Vehicle_0": [
+        "left",
+        "left"
+    ],
+    "Vehicle_1": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_2": [
+        "left",
+        "left"
+    ],
+    "Vehicle_3": [
+        "left",
+        "right"
+    ],
+    "Vehicle_4": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_5": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_6": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_7": [
+        "right",
+        "left"
+    ],
+    "Vehicle_8": [
+        "left",
+        "left"
+    ],
+    "Vehicle_9": [
+        "left",
+        "left"
+    ],
+    "Vehicle_10": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_11": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_12": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_13": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_14": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_15": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_16": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_17": [
+        "left",
+        "left"
+    ],
+    "Vehicle_18": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_19": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_20": [
+        "left",
+        "left"
+    ],
+    "Vehicle_21": [
+        "left",
+        "left"
+    ],
+    "Vehicle_22": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_23": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_24": [
+        "right",
+        "left"
+    ],
+    "Vehicle_25": [
+        "right",
+        "right"
+    ],
+    "Vehicle_26": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_27": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_28": [
+        "right",
+        "right"
+    ],
+    "Vehicle_29": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_30": [
+        "left",
+        "left"
+    ],
+    "Vehicle_31": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_32": [
+        "right",
+        "right"
+    ],
+    "Vehicle_33": [
+        "right",
+        "left"
+    ],
+    "Vehicle_34": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_35": [
+        "right",
+        "right"
+    ],
+    "Vehicle_36": [
+        "right",
+        "right"
+    ],
+    "Vehicle_37": [
+        "left",
+        "right"
+    ],
+    "Vehicle_38": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_39": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_40": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_41": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_42": [
+        "right",
+        "right"
+    ],
+    "Vehicle_43": [
+        "right",
+        "right"
+    ],
+    "Vehicle_44": [
+        "right",
+        "left"
+    ],
+    "Vehicle_45": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_46": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_47": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_48": [
+        "right",
+        "left"
+    ],
+    "Vehicle_49": [
+        "right",
+        "right"
+    ],
+    "Vehicle_50": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_51": [
+        "right",
+        "right"
+    ],
+    "Vehicle_52": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_53": [
+        "right",
+        "right"
+    ],
+    "Vehicle_54": [
+        "right",
+        "left"
+    ],
+    "Vehicle_55": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_56": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_57": [
+        "right",
+        "right"
+    ],
+    "Vehicle_58": [
+        "right",
+        "left"
+    ],
+    "Vehicle_59": [
+        "right",
+        "right"
+    ],
+    "Vehicle_60": [
+        "left",
+        "left"
+    ],
+    "Vehicle_61": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_62": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_63": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_64": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_65": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_66": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_67": [
+        "left",
+        "straight"
+    ],
+    "Vehicle_68": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_69": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_70": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_71": [
+        "right",
+        "left"
+    ],
+    "Vehicle_72": [
+        "right",
+        "left"
+    ],
+    "Vehicle_73": [
+        "left",
+        "left"
+    ],
+    "Vehicle_74": [
+        "right",
+        "right"
+    ],
+    "Vehicle_75": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_76": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_77": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_78": [
+        "right",
+        "right"
+    ],
+    "Vehicle_79": [
+        "straight",
+        "right"
+    ],
+    "Vehicle_80": [
+        "right",
+        "left"
+    ],
+    "Vehicle_81": [
+        "right",
+        "left"
+    ],
+    "Vehicle_82": [
+        "left",
+        "left"
+    ],
+    "Vehicle_83": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_84": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_85": [
+        "right",
+        "left"
+    ],
+    "Vehicle_86": [
+        "straight",
+        "left"
+    ],
+    "Vehicle_87": [
+        "right",
+        "straight"
+    ],
+    "Vehicle_88": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_89": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_90": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_91": [
+        "right",
+        "left"
+    ],
+    "Vehicle_92": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_93": [
+        "left",
+        "left"
+    ],
+    "Vehicle_94": [
+        "straight",
+        "straight"
+    ],
+    "Vehicle_95": [
+        "left",
+        "right"
+    ]
 }
