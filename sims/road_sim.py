@@ -7,7 +7,7 @@ META = {
     'models': {
         'RoadModel': {
             'public': True,
-            'params': ['from_direction', 'num_vehicles', 'next_adjacent_roads'],
+            'params': ['direction', 'num_vehicles', 'next_adjacent_roads'],
             'attrs': ['traffic_lights_in', 'num_vehicles'],
         },
     },
@@ -25,6 +25,7 @@ class RoadSim(mosaik_api_v3.Simulator):
         self.road_entities = {}
         self.vehicles_count = 0
         self.time = 0
+        self.step_count = 0
         
     def initialize_road_adjacencies(self, adjacency_map):
         for eid, adjacencies in adjacency_map.items():
@@ -36,12 +37,12 @@ class RoadSim(mosaik_api_v3.Simulator):
             road_model_instance.next_adjacent_roads = updated_adjacencies
         self.print_road_state()
 
-    def create(self, num, model, from_direction, num_vehicles):
+    def create(self, num, model, direction, num_vehicles):
         n_roads = len(self.road_entities)
         entities = []
         for i in range(n_roads, n_roads + num):
             eid = '%s%d' % (self.eid_prefix, i)
-            model_instance = road_model.RoadModel(eid, from_direction, num_vehicles, self.vehicles_count)
+            model_instance = road_model.RoadModel(eid, direction, num_vehicles, self.vehicles_count)
             self.vehicles_count += num_vehicles
             self.road_entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
@@ -50,6 +51,7 @@ class RoadSim(mosaik_api_v3.Simulator):
 
     def step(self, time, inputs, max_advance):
         self.time = time
+        self.step_count += 1
         data = {}
         for eid, attrs in inputs.items():
             tl_dict = attrs.get('traffic_lights_in', {})
@@ -80,9 +82,10 @@ class RoadSim(mosaik_api_v3.Simulator):
         return data
     
     def print_road_state(self):
-        with open('data/road_state.txt', 'a') as f:
+        with open('data/road_step_history.txt', 'a') as f:
+            f.write(f'Step_{self.step_count}:\n')
             for road in self.road_entities.values():
-                f.write(str(road))
+                f.write('\t' + str(road))
                 f.write('\n\n')
     
 

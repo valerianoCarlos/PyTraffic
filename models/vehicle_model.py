@@ -15,7 +15,7 @@ class VehicleModel:
         self.curr_road = init_road   # eid of the road in which the vehicle is currently located
         
     def __str__(self):
-        return f"{self.eid}: Current Road='{self.curr_road}', Directions='{self.directions}'"
+        return f"{self.eid}: current_road='{self.curr_road}', directions='{self.directions}'"
 
     def update_position(self, new_road):
         self.curr_road = new_road

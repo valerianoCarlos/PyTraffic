@@ -18,27 +18,27 @@ SIM_CONFIG = {
         'cmd': '%(python)s sims/collector.py %(addr)s',
     },
 }
-END = 50                     # seconds of simulation time
-MAX_VEHICLES_PER_ROAD = 2    # maximum number of vehicles per road
-N_DIRECTIONS = 2
+END = 50                        # seconds of simulation time
+MAX_VEHICLES_PER_ROAD = 2       # maximum number of vehicles per road
+N_DIRECTIONS_PER_VEHICLE = 2    # number of directions generated for each vehicle
 
 
 def main():
     if len(sys.argv) > 1:
-        n = int(sys.argv[1])
+        n_intersections_per_side = int(sys.argv[1])
     else:
         raise ValueError('To run the simulation, provide the number of intersections per side as a command line argument')
     
-    if n < 2:
+    if n_intersections_per_side < 2:
         raise ValueError('The number of intersections per side must be at least 2')
     
     world = mosaik.World(SIM_CONFIG)
-    generate_directions_file(n)
-    create_scenario(world, n)
+    generate_directions_file(n_intersections_per_side)
+    create_scenario(world, n_intersections_per_side)
     world.run(until=END)
     
     
-def create_scenario(world, n):
+def create_scenario(world, n_intersections_per_side):
     
     # start simulators
     intersection_sim = world.start('IntersectionSim')
@@ -46,7 +46,7 @@ def create_scenario(world, n):
     collector = world.start('Collector')
     
     # instantiate models
-    grid = instantiate_intersection_graph(n)
+    grid = instantiate_intersection_graph(n_intersections_per_side)
     intersections = instantiate_intersections(grid, intersection_sim)
     roads, adjacency_map = instantiate_roads(world, grid, road_sim)
     
@@ -82,9 +82,9 @@ def instantiate_roads(world, grid, road_sim):
     adjacency_map = {}  # maps road EIDs to lists of adjacent road EIDs
     
     for u, v, data in grid.edges(data=True):
-        from_direction = determine_direction(u, v)      # determine the direction from which of the road is coming
+        road_direction = determine_direction(u, v)      # determine the direction from which of the road is coming
         num_vehicles = random.randint(0, MAX_VEHICLES_PER_ROAD)     # instantiate a random number of vehicles between 0 and MAX for each road
-        new_road = road_sim.RoadModel(from_direction=from_direction, num_vehicles=num_vehicles)
+        new_road = road_sim.RoadModel(direction=road_direction, num_vehicles=num_vehicles)
         grid.edges[u, v, 0]['road'] = new_road
         grid.edges[u, v, 0]['label'] = new_road.eid
         roads.append(new_road)
@@ -163,13 +163,14 @@ def generate_directions_file(n):
     directions = {}
     for i in range(max_vehicles):
         vehicle_id = 'Vehicle_' + str(i)
-        directions[vehicle_id] = [random.choice(['straight', 'left', 'right']) for _ in range(N_DIRECTIONS)]
+        directions[vehicle_id] = [random.choice(['straight', 'left', 'right']) for _ in range(N_DIRECTIONS_PER_VEHICLE)]
 
     with open('data/directions.json', 'w') as file:
         json.dump(directions, file, indent=4)
         
         
 def compute_edges_in_grid_bidirectional(n):
+    # compute the number of edges in the grid before instantiating the grid
     if n < 2:
         return 0
 

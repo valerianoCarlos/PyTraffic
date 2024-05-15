@@ -56,6 +56,6 @@ The scenario is represented as a NxN 2d grid of intersections, where N is a para
 
 On the terminal, the simulation displays which vehicles reach their final destination and which are trying to go out-of-bounds.
 
-## Grid Representation (4 nodes per side)
+## Grid example: 4 nodes per side
 
 ![2d_grid_example](images/example_grid.png)

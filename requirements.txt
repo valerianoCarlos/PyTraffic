@@ -1,0 +1,16 @@
+matplotlib==3.8.3
+graphviz==0.20.3
+hplib==1.9
+mosaik==3.1.0
+mosaik-api==3.0.2
+mosaik-api-v3==3.0.7
+mosaik-csv==1.2.0
+mosaik-docker==0.1.4
+mosaik-hdf5==0.4
+mosaik-heatpump==1.0.0
+mosaik-householdsim==2.1.0
+mosaik-pypower==0.8.3
+mosaik-simpy-io==0.2.4
+mosaik-web==0.3.0
+networkx==3.3
+pydot==2.0.0
