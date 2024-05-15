@@ -6,6 +6,7 @@ import random
 import json
 import itertools as it
 import sys
+import time
 
 SIM_CONFIG = {
     'IntersectionSim': {
@@ -32,10 +33,13 @@ def main():
     if n_intersections_per_side < 2:
         raise ValueError('The number of intersections per side must be at least 2')
     
+    start_time = time.time()
     world = mosaik.World(SIM_CONFIG)
     generate_directions_file(n_intersections_per_side)
     create_scenario(world, n_intersections_per_side)
     world.run(until=END)
+    end_time = time.time()
+    print(f"Execution time: {end_time - start_time} seconds")
     
     
 def create_scenario(world, n_intersections_per_side):
