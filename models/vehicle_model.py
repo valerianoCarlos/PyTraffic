@@ -1,17 +1,12 @@
-import json
+import random
 
-DIRS_FILE = 'data/directions.json'
+N_DIRECTIONS_PER_VEHICLE = 2
 
 
 class VehicleModel:
     def __init__(self, init_road, id):
         self.eid = f'Vehicle_{id}'
-
-        # load directions from JSON file
-        with open(DIRS_FILE) as file:
-            all_directions = json.load(file)
-        
-        self.directions = all_directions.get(self.eid, [])  # list of directions for the vehicle
+        self.directions = [random.choice(['straight', 'left', 'right']) for _ in range(N_DIRECTIONS_PER_VEHICLE)]
         self.curr_road = init_road   # eid of the road in which the vehicle is currently located
         
     def __str__(self):

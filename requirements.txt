@@ -1,8 +1,9 @@
 matplotlib==3.8.3
 graphviz==0.20.3
 hplib==1.9
-mosaik==3.1.0
-mosaik-api==3.0.2
-mosaik-api-v3==3.0.7
+mosaik==3.3.2
+mosaik-api==3.0.3
+mosaik-api-v3==3.0.10
 networkx==3.3
 pydot==2.0.0
+newrelic==9.9.1

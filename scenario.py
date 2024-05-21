@@ -1,12 +1,12 @@
 import mosaik
-from mosaik.util import connect_many_to_one
+import mosaik.util
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
-import json
 import itertools as it
 import sys
 import time
+import psutil
 
 SIM_CONFIG = {
     'IntersectionSim': {
@@ -21,7 +21,6 @@ SIM_CONFIG = {
 }
 END = 50                        # seconds of simulation time
 MAX_VEHICLES_PER_ROAD = 2       # maximum number of vehicles per road
-N_DIRECTIONS_PER_VEHICLE = 2    # number of directions generated for each vehicle
 
 
 def main():
@@ -33,16 +32,32 @@ def main():
     if n_intersections_per_side < 2:
         raise ValueError('The number of intersections per side must be at least 2')
     
-    start_time = time.time()
+    psutil.cpu_percent(interval=None)
+    
+    start_tot_time = time.time()
     world = mosaik.World(SIM_CONFIG)
-    generate_directions_file(n_intersections_per_side)
-    create_scenario(world, n_intersections_per_side)
+    setup_time = create_scenario(world, n_intersections_per_side)
     world.run(until=END)
-    end_time = time.time()
-    print(f"Execution time: {end_time - start_time} seconds")
+    end_tot_time = time.time()
+    exec_time = end_tot_time - start_tot_time
+    sim_time = exec_time - setup_time
+    
+    cpu_utilization = psutil.cpu_percent(interval=None)
+    per_core_cpu = psutil.cpu_percent(percpu=True)
+    mem_utilization = psutil.virtual_memory().percent
+
+    with open('data/simulation_statistics.txt', 'w') as file:
+        file.write(f"Setup time: {setup_time:.3f} seconds\n")
+        file.write(f"Simulation time: {sim_time:.3f} seconds\n")
+        file.write(f"Total execution time: {exec_time:.3f} seconds\n")
+        file.write(f"CPU utilization: {cpu_utilization:.2f}%\n")
+        file.write(f"Per-core CPU utilization: {per_core_cpu}%\n")
+        file.write(f"Memory utilization: {mem_utilization:.2f}%\n")
     
     
 def create_scenario(world, n_intersections_per_side):
+    
+    start_init_time = time.time()
     
     # start simulators
     intersection_sim = world.start('IntersectionSim')
@@ -59,11 +74,14 @@ def create_scenario(world, n_intersections_per_side):
     monitor = collector.Monitor()
     
     # connect entities
-    connect_many_to_one(world, intersections, monitor, 'traffic_lights')
-    connect_many_to_one(world, roads, monitor, 'num_vehicles')
+    mosaik.util.connect_many_to_one(world, intersections, monitor, 'traffic_lights')
+    mosaik.util.connect_many_to_one(world, roads, monitor, 'num_vehicles')
     
     # draw the intersection graph
     draw_graph(grid)
+    
+    end_init_time = time.time()
+    return end_init_time - start_init_time
 
 
 def instantiate_intersection_graph(num_intersections):
@@ -155,35 +173,7 @@ def draw_graph(grid):
     
     plt.axis('equal')
     plt.savefig('images/grid.png')
-    nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')
-    
-
-def generate_directions_file(n):
-    # compute worst case scenario of vehicles in the simulation
-    edges = compute_edges_in_grid_bidirectional(n)
-    max_vehicles = edges * MAX_VEHICLES_PER_ROAD
-    
-    # generate a JSON file with the directions for the vehicles
-    directions = {}
-    for i in range(max_vehicles):
-        vehicle_id = 'Vehicle_' + str(i)
-        directions[vehicle_id] = [random.choice(['straight', 'left', 'right']) for _ in range(N_DIRECTIONS_PER_VEHICLE)]
-
-    with open('data/directions.json', 'w') as file:
-        json.dump(directions, file, indent=4)
-        
-        
-def compute_edges_in_grid_bidirectional(n):
-    # compute the number of edges in the grid before instantiating the grid
-    if n < 2:
-        return 0
-
-    interior_edges = 4 * (n - 2) * (n - 2)
-    edge_edges = 3 * 4 * (n - 2)
-    corner_edges = 2 * 4
-
-    total_edges = interior_edges + edge_edges + corner_edges
-    return total_edges
+    nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')    
 
 
 if __name__ == '__main__':

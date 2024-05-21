@@ -32,7 +32,6 @@ class IntersectionSim(mosaik_api_v3.Simulator):
         for i in range(n_entities, n_entities + num):
             eid = '%s%d' % (self.eid_prefix, i)
             model_instance = intersection_model.IntersectionModel(eid)
-            # print(model_instance)
             self.entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
 

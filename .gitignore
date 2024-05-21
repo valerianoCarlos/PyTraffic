@@ -5,5 +5,7 @@ __pycache__/
 
 data/
 
+.DS_Store
+
 images/*
 !images/example_grid.png
