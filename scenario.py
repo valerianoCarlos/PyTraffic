@@ -91,6 +91,7 @@ def instantiate_intersection_graph(num_intersections):
 
 def instantiate_intersections(grid, intersection_sim):
     intersections = []
+    
     # TODO: introduce scalability
     for node in grid.nodes():
         new_intersection = intersection_sim.IntersectionModel()
