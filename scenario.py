@@ -91,6 +91,7 @@ def instantiate_intersection_graph(num_intersections):
 
 def instantiate_intersections(grid, intersection_sim):
     intersections = []
+    # TODO: introduce scalability
     for node in grid.nodes():
         new_intersection = intersection_sim.IntersectionModel()
         grid.nodes[node]['intersection'] = new_intersection
@@ -103,6 +104,7 @@ def instantiate_roads(world, grid, road_sim):
     roads = []
     adjacency_map = {}  # maps road EIDs to lists of adjacent road EIDs
     
+    # TODO: introduce scalability
     for u, v, data in grid.edges(data=True):
         road_direction = determine_direction(u, v)      # determine the direction from which of the road is coming
         num_vehicles = random.randint(0, MAX_VEHICLES_PER_ROAD)     # instantiate a random number of vehicles between 0 and MAX for each road
@@ -169,11 +171,19 @@ def draw_graph(grid):
         tuple(edge): f"{attrs['label']}"
         for *edge, attrs in grid.edges(keys=True, data=True)
     }
-    nx.draw_networkx_edge_labels(grid, pos=pos, edge_labels=edge_labels, connectionstyle=connectionstyle, label_pos=0.3, font_size=8, font_color='blue', bbox={"alpha": 0})
-    
+    nx.draw_networkx_edge_labels(
+        grid,
+        pos=pos,
+        edge_labels=edge_labels,
+        connectionstyle=connectionstyle,
+        label_pos=0.3,
+        font_size=8,
+        font_color='blue',
+        bbox={"alpha": 0}
+    )
     plt.axis('equal')
     plt.savefig('images/grid.png')
-    nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')    
+    nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')
 
 
 if __name__ == '__main__':

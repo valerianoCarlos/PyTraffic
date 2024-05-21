@@ -39,6 +39,8 @@ class IntersectionSim(mosaik_api_v3.Simulator):
 
     def step(self, time, inputs, max_advance):
         self.time = time
+        
+        # TODO: introduce scalability
         for eid, model_instance in self.entities.items():
             model_instance.step(time)
 

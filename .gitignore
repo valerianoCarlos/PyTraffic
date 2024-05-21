@@ -3,9 +3,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-data/
-
 .DS_Store
-
-images/*
-!images/example_grid.png
