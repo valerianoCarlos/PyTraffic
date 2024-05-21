@@ -42,7 +42,7 @@ $ pip install -r requirements.txt
   If there is a road in the direction in which the vehicle wants to go, the vehicle is removed from the queue of the current road and it's added to the queue of the destination road.
   In case no roads for a certain direction are found, the vehicle is considered to be trying to go out-of-bounds. If the vehicle has no more directions, it is considered to have reached its destination. In both these last two cases, the vehicle is removed from the simulation.
 
-- **Vehicle**: represents a single vehicle moving along a road. It reads a list of directions (e.g., 'right', 'left', 'straight') from the _directions.json_ file and it is moved accordingly by the roads whenever the respective traffic light is green.
+- **Vehicle**: represents a single vehicle moving along a road. It holds a list of directions (e.g., 'right', 'left', 'straight') and it is moved accordingly by the roads whenever the respective traffic light is green.
 
 ## Simulators
 
