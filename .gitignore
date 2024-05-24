@@ -9,3 +9,6 @@ data/
 
 images/
 !images/example_grid.png
+
+.vscode/
+
