@@ -36,8 +36,7 @@ def main():
     
     start_tot_time = time.time()
     world = mosaik.World(SIM_CONFIG)
-    grid, setup_time = create_scenario(world, n_intersections_per_side)
-    
+    setup_time = create_scenario(world, n_intersections_per_side)
     world.run(until=END)
     end_tot_time = time.time()
     exec_time = end_tot_time - start_tot_time
@@ -47,15 +46,13 @@ def main():
     per_core_cpu = psutil.cpu_percent(percpu=True)
     mem_utilization = psutil.virtual_memory().percent
 
-    with open('data/simulation_statistics.txt', 'w') as file:
+    with open('data/multithreading_statistics.txt', 'w') as file:
         file.write(f"Number of intersections: {n_intersections_per_side**2}\n")
-        file.write(f"Number of roads: {len(grid.edges)}\n")
         file.write(f"Setup time: {setup_time:.3f} seconds\n")
         file.write(f"Simulation time: {sim_time:.3f} seconds\n")
         file.write(f"Total execution time: {exec_time:.3f} seconds\n")
         file.write(f"CPU utilization: {cpu_utilization:.2f}%\n")
-        for i, usage in enumerate(per_core_cpu):
-            file.write(f"CPU Core {i+1} utilization: {usage}%\n")
+        file.write(f"Per-core CPU utilization: {per_core_cpu}%\n")
         file.write(f"Memory utilization: {mem_utilization:.2f}%\n")
     
     
@@ -85,7 +82,7 @@ def create_scenario(world, n_intersections_per_side):
     draw_graph(grid)
     
     end_init_time = time.time()
-    return grid, end_init_time - start_init_time
+    return end_init_time - start_init_time
 
 
 def instantiate_intersection_graph(num_intersections):

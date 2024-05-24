@@ -1,6 +1,6 @@
 import mosaik_api_v3
 import models.road_model as road_model
-import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 META = {
     'type': 'event-based',
@@ -54,16 +54,21 @@ class RoadSim(mosaik_api_v3.Simulator):
         self.step_count += 1
         data = {}
         
-        # TODO: introduce scalability
-        for eid, attrs in inputs.items():
+        # using multi-threading to parallelize the road entities stepping
+        def process_entity(eid, attrs):
             tl_dict = attrs.get('traffic_lights_in', {})
             if len(tl_dict) != 1:
                 raise RuntimeError('Only one ingoing connection allowed per road, but "%s" has %i.' % (eid, len(tl_dict)))
             tl = list(tl_dict.values())[0]
-            
             self.road_entities[eid].step(tl)
-            
-            data[eid] = {'traffic_lights_in': tl}
+            return eid, {'traffic_lights_in': tl}
+
+        with ThreadPoolExecutor() as executor:
+            future_to_eid = {executor.submit(process_entity, eid, attrs): eid for eid, attrs in inputs.items()}
+            for future in as_completed(future_to_eid):
+                eid, result = future.result()
+                data[eid] = result
+
         
         self.data = data
         self.print_road_state()

@@ -5,6 +5,7 @@ A simple data collector that prints all data when the simulation finishes.
 import collections
 import json
 import mosaik_api_v3
+from concurrent.futures import ThreadPoolExecutor
 
 META = {
     'type': 'event-based',
@@ -37,9 +38,15 @@ class Collector(mosaik_api_v3.Simulator):
 
     def step(self, time, inputs, max_advance):
         data = inputs.get(self.eid, {})
-        for attr, values in data.items():
+        
+        def process_input(attr, values):
             for src, value in values.items():
                 self.data[src][attr][time] = value
+
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(process_input, attr, values) for attr, values in data.items()]
+            for future in futures:
+                future.result()
 
         return None
 

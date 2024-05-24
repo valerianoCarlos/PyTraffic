@@ -6,4 +6,6 @@ if [ -f "data/road_step_history.txt" ]; then
 fi
 
 # Run the Python simulation script with the number of intersections as a command line argument
-python3 scenario.py $1
+
+# python3 scenario.py $1
+python3 scenario_multithreading.py $1

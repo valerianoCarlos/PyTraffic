@@ -1,5 +1,6 @@
 import mosaik_api_v3
 import models.intersection_model as intersection_model
+from concurrent.futures import ThreadPoolExecutor
 
 META = {
     'type': 'time-based',
@@ -40,9 +41,15 @@ class IntersectionSim(mosaik_api_v3.Simulator):
     def step(self, time, inputs, max_advance):
         self.time = time
         
-        # TODO: introduce scalability
-        for eid, model_instance in self.entities.items():
+        # using multi-threading to parallelize the intersection entities stepping
+        def process_entity(eid, model_instance):
             model_instance.step(time)
+            return eid
+
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(process_entity, eid, model_instance) for eid, model_instance in self.entities.items()]
+            for future in futures:
+                future.result()
 
         return time + 1
 

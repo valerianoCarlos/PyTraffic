@@ -33,11 +33,9 @@ class RoadModel:
                     self.transfer_vehicle(vehicle, next_road)
                 else:
                     # if the road in a direction does not exist, remove the vehicle from the simulation
-                    # print(f"{vehicle.eid} is trying to move to a non-existing road. RIP...")
                     del vehicle
             else:
                 # there is no next direction, the vehicle has arrived at its destination
-                # print(f"{vehicle.eid} has arrived at its destination. YAY!")
                 del vehicle
             
     def determine_traffic_light_direction(self):
