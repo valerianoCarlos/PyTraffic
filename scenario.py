@@ -7,6 +7,7 @@ import itertools as it
 import sys
 import time
 import psutil
+import threading
 
 SIM_CONFIG = {
     'IntersectionSim': {
@@ -24,7 +25,8 @@ MAX_VEHICLES_PER_ROAD = 2       # maximum number of vehicles per road
 
 
 def main():
-    if len(sys.argv) > 2:
+    # check input parameters
+    if len(sys.argv) == 3:
         n_intersections_per_side = int(sys.argv[1])
         scalability_mode = sys.argv[2]
     else:
@@ -33,29 +35,41 @@ def main():
     if n_intersections_per_side < 2:
         raise ValueError('The number of intersections per side must be at least 2')
     
-    psutil.cpu_percent(interval=None)
+    # start resource monitoring in a separate thread
+    stop_event = threading.Event()
+    resource_data = []
+    resource_thread = threading.Thread(target=monitor_resources, args=(stop_event, resource_data))
+    resource_thread.start()
     
-    start_tot_time = time.time()    # start measuring the total execution time
+    # start time monitoring
+    start_tot_time = time.time()
+    
+    # run simulation
     world = mosaik.World(SIM_CONFIG)
     grid, setup_time = create_scenario(world, n_intersections_per_side)   
     world.run(until=END)
-    end_tot_time = time.time()      # stop measuring the total execution time
+    stop_event.set()
     
+    # stop time monitoring
+    end_tot_time = time.time()
     exec_time = end_tot_time - start_tot_time
     sim_time = exec_time - setup_time
-    cpu_utilization = psutil.cpu_percent(interval=None)
-    mem_utilization = psutil.virtual_memory().percent
     n_roads = len(grid.edges)
+    
+    # stop resource monitoring
+    resource_thread.join()
+    avg_memory_usage, avg_cpu_usage = resource_data
     
     # write simulation statistics to a CSV file
     with open(f'data/results_{'no_scaling' if scalability_mode == "master" else scalability_mode.split('/')[-1]}_{n_intersections_per_side}.csv', 'w') as file:
         file.write("# Intersections,# Roads,Setup time,Simulation time,Total execution time,CPU usage,Memory usage\n")
-        file.write(f"{n_intersections_per_side**2},{n_roads},{setup_time:.2f},{sim_time:.2f},{exec_time:.2f},{cpu_utilization},{mem_utilization}\n")
+        file.write(f"{n_intersections_per_side**2},{n_roads},{setup_time:.2f},{sim_time:.2f},{exec_time:.2f},{avg_cpu_usage},{avg_memory_usage}\n")
 
     
 def create_scenario(world, n_intersections_per_side):
     
-    start_init_time = time.time()    # start measuring the setup time
+    # start time monitorin
+    start_init_time = time.time()
     
     # start simulators
     intersection_sim = world.start('IntersectionSim')
@@ -78,12 +92,14 @@ def create_scenario(world, n_intersections_per_side):
     # draw the intersection graph
     draw_graph(grid)
     
-    end_init_time = time.time()     # stop measuring the setup time
+    # stop time monitoring
+    end_init_time = time.time()
     init_time = end_init_time - start_init_time
     return grid, init_time
 
 
 def instantiate_intersection_graph(num_intersections):
+    # create a grid graph with num_intersections x num_intersections nodes
     grid = nx.grid_2d_graph(num_intersections, num_intersections, create_using=nx.MultiDiGraph())
     return grid
 
@@ -91,7 +107,6 @@ def instantiate_intersection_graph(num_intersections):
 def instantiate_intersections(grid, intersection_sim):
     intersections = []
     
-    # TODO: introduce scalability?
     for node in grid.nodes():
         new_intersection = intersection_sim.IntersectionModel()
         grid.nodes[node]['intersection'] = new_intersection
@@ -104,7 +119,6 @@ def instantiate_roads(world, grid, road_sim):
     roads = []
     adjacency_map = {}  # maps road EIDs to lists of adjacent road EIDs
     
-    # TODO: introduce scalability?
     for u, v, data in grid.edges(data=True):
         road_direction = determine_direction(u, v)      # determine the direction from which of the road is coming
         num_vehicles = random.randint(0, MAX_VEHICLES_PER_ROAD)     # instantiate a random number of vehicles between 0 and MAX for each road
@@ -156,14 +170,17 @@ def calculate_relative_direction(current_direction, adj_direction):
 
 def draw_graph(grid):
     plt.figure(figsize=(8, 8), frameon=False)
-    pos = {(x,y):(y,-x) for x,y in grid.nodes()} 
+    pos = {(x,y):(y,-x) for x,y in grid.nodes()}
     connectionstyle = [f"arc3,rad={r}" for r in it.accumulate([0.15] * 4)]
     
+    # draw nodes
     nx.draw_networkx_nodes(grid, pos, node_color='lightgreen', node_size=600)
+    
     # draw node labels
     node_labels = {node: grid.nodes[node]['label'] for node in grid.nodes()}
     nx.draw_networkx_labels(grid, pos=pos, labels=node_labels, font_size=8)
     
+    # draw edges
     nx.draw_networkx_edges(grid, pos=pos, edge_color="grey", arrowsize=20, connectionstyle=connectionstyle)
     
     # draw edge labels
@@ -184,6 +201,27 @@ def draw_graph(grid):
     plt.axis('equal')
     plt.savefig('images/grid.png')
     nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')
+    
+    
+def monitor_resources(stop_event, resource_data, interval=.5):
+    memory_samples = []
+    cpu_samples = []
+
+    try:
+        while not stop_event.is_set():
+            memory_samples.append(psutil.virtual_memory().percent)
+            cpu_samples.append(psutil.cpu_percent(interval=interval))
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        # stop monitoring when interrupted
+        pass
+
+    if memory_samples and cpu_samples:  # Ensure there are samples to prevent division by zero
+        avg_memory_usage = sum(memory_samples) / len(memory_samples)
+        avg_cpu_usage = sum(cpu_samples) / len(cpu_samples)
+        resource_data.extend([avg_memory_usage, avg_cpu_usage])
+    else:
+        resource_data.extend([0, 0])
 
 
 if __name__ == '__main__':

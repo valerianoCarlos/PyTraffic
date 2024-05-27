@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # modes=("master" "feature/multithreading" "feature/multiprocessing" "feature/ray")
-modes=("feature/multithreading")
-intersections=(5 10 50)
+modes=("master")
+intersections=(5 10 25)
 
 for mode in "${modes[@]}"; do
     git checkout $mode
