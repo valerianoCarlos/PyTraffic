@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import sys
 
 # Constants
 N_INTERSECTIONS = '# Intersections'
@@ -71,12 +72,16 @@ def plot_resource_usage(df, output_file):
 
 
 def main():
+    if len(sys.argv) != 2:
+        raise ValueError('Scalability mode missing as argument')
+    else:
+        scalability_mode = sys.argv[1]
     directory = "data"
     df = read_csv_files(directory)
     
     # Generate plots
-    plot_time_measures(df, os.path.join(directory, "combined_times.png"))
-    plot_resource_usage(df, os.path.join(directory, "combined_resources.png"))
+    plot_time_measures(df, os.path.join(directory, f"combined_times_{'no_scaling' if scalability_mode == "master" else scalability_mode.split('/')[-1]}.png"))
+    plot_resource_usage(df, os.path.join(directory, f"combined_resources_{'no_scaling' if scalability_mode == "master" else scalability_mode.split('/')[-1]}.png"))
 
 
 if __name__ == "__main__":
