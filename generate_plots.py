@@ -25,7 +25,7 @@ def plot_time_measures(df, output_file):
     setup_time = df_sorted.groupby(N_INTERSECTIONS)[SETUP_TIME].mean()
     simulation_time = df_sorted.groupby(N_INTERSECTIONS)[SIM_TIME].mean()
     
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     
     bar_width = 0.20
     bar_positions = range(len(intersections))
@@ -50,7 +50,7 @@ def plot_resource_usage(df, output_file):
     cpu_usage = df_sorted.groupby(N_INTERSECTIONS)[CPU_USAGE].mean()
     memory_usage = df_sorted.groupby(N_INTERSECTIONS)[MEM_USAGE].mean()
     
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     
     bar_width = 0.35
     bar_positions = range(len(intersections))
