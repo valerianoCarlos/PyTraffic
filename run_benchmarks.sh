@@ -2,7 +2,7 @@
 
 # modes = ("no_scaling" "multithreading" "multithreading_nogil" "multiprocessing" "ray")
 
-mode="no_scaling"
+mode="multiprocessing"
 intersections=(5 10 25 50)
 
 for n in "${intersections[@]}"; do

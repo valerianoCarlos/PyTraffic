@@ -1,5 +1,6 @@
 import mosaik_api_v3
 import models.intersection_model as intersection_model
+from multiprocessing import Pool, cpu_count
 
 META = {
     'type': 'time-based',
@@ -12,6 +13,10 @@ META = {
     },
 }
 
+def process_intersection_step(args):
+    eid, model_instance, time = args
+    model_instance.step(time)
+    return eid, model_instance
 
 class IntersectionSim(mosaik_api_v3.Simulator):
     def __init__(self):
@@ -40,9 +45,13 @@ class IntersectionSim(mosaik_api_v3.Simulator):
     def step(self, time, inputs, max_advance):
         self.time = time
         
-        # TODO: introduce scalability
-        for eid, model_instance in self.entities.items():
-            model_instance.step(time)
+        args = [(eid, model_instance, time) for eid, model_instance in self.entities.items()]
+
+        with Pool(processes=cpu_count()) as pool:
+            results = pool.map(process_intersection_step, args)
+
+        for eid, model_instance in results:
+            self.entities[eid] = model_instance
 
         return time + 1
 
