@@ -7,6 +7,3 @@ fi
 
 # Run the Python simulation script with the number of intersections as a command line argument
 python3 scenario.py $1 $2
-
-# Generate plots from the simulation data
-python3 generate_plots.py $2

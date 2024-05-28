@@ -1,7 +1,7 @@
 import mosaik
 import mosaik.util
 import networkx as nx
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import random
 import itertools as it
 import sys
@@ -22,7 +22,7 @@ SIM_CONFIG = {
 }
 END = 50                        # seconds of simulation time
 MAX_VEHICLES_PER_ROAD = 2       # maximum number of vehicles per road
-
+SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 
 def main():
     # check input parameters
@@ -34,6 +34,9 @@ def main():
     
     if n_intersections_per_side < 2:
         raise ValueError('The number of intersections per side must be at least 2')
+    
+    if scalability_mode not in SCALABILITY_MODES:
+        raise ValueError('The scalability mode must be one of the following: no_scaling, multithreading, multithreading_nogil, multiprocessing, ray')
     
     # start resource monitoring in a separate thread
     stop_event = threading.Event()
@@ -61,9 +64,9 @@ def main():
     avg_memory_usage, avg_cpu_usage = resource_data
     
     # write simulation statistics to a CSV file
-    with open(f'data/results_{'no_scaling' if scalability_mode == "master" else scalability_mode.split('/')[-1]}_{n_intersections_per_side}.csv', 'w') as file:
+    with open(f"data/{scalability_mode}/benchmark_stats_{n_intersections_per_side}.csv", 'w') as file:
         file.write("# Intersections,# Roads,Setup time,Simulation time,Total execution time,CPU usage,Memory usage\n")
-        file.write(f"{n_intersections_per_side**2},{n_roads},{setup_time:.2f},{sim_time:.2f},{exec_time:.2f},{avg_cpu_usage},{avg_memory_usage}\n")
+        file.write(f"{n_intersections_per_side**2},{n_roads},{setup_time:.2f},{sim_time:.2f},{exec_time:.2f},{avg_cpu_usage:.2f},{avg_memory_usage:.2f}\n")
 
     
 def create_scenario(world, n_intersections_per_side):
@@ -90,7 +93,7 @@ def create_scenario(world, n_intersections_per_side):
     mosaik.util.connect_many_to_one(world, roads, monitor, 'num_vehicles')
     
     # draw the intersection graph
-    draw_graph(grid)
+    # draw_graph(grid)
     
     # stop time monitoring
     end_init_time = time.time()
