@@ -1,5 +1,6 @@
 import mosaik_api_v3
 import models.intersection_model as intersection_model
+import ray
 
 META = {
     'type': 'time-based',
@@ -31,7 +32,7 @@ class IntersectionSim(mosaik_api_v3.Simulator):
 
         for i in range(n_entities, n_entities + num):
             eid = '%s%d' % (self.eid_prefix, i)
-            model_instance = intersection_model.IntersectionModel(eid)
+            model_instance = intersection_model.IntersectionModel.remote(eid=eid)
             self.entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
 
@@ -40,22 +41,25 @@ class IntersectionSim(mosaik_api_v3.Simulator):
     def step(self, time, inputs, max_advance):
         self.time = time
         
-        # TODO: introduce scalability
         for eid, model_instance in self.entities.items():
-            model_instance.step(time)
+            model_instance.step.remote(time_elapsed=time)
 
         return time + 1
 
     def get_data(self, outputs):
         data = {}
         for eid, attrs in outputs.items():
-            model = self.entities[eid]
+            actor = self.entities[eid]
+            model = ray.get(actor.get_traffic_lights.remote())
+            print(actor)
+            print(model)
+
             data['time'] = self.time
             data[eid] = {}
             for attr in attrs:
                 if attr not in self.meta['models']['IntersectionModel']['attrs']:
                     raise ValueError('Unknown output attribute: %s' % attr)
-                data[eid][attr] = getattr(model, attr)
+                data[eid][attr] = model
         return data
 
 

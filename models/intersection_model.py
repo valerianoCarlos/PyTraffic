@@ -1,5 +1,8 @@
+import ray
+
 LIGHT_DURATION = 10    # seconds
 
+@ray.remote
 class IntersectionModel:
     def __init__(self, eid):
         self.eid = eid
@@ -22,3 +25,6 @@ class IntersectionModel:
                     self.traffic_lights[direction] = 'green'
                 else:
                     raise ValueError('Invalid traffic light state: %s', self.traffic_lights[direction])
+                
+    def get_traffic_lights(self):
+        return self.traffic_lights
