@@ -1,7 +1,7 @@
 import mosaik
 import mosaik.util
 import networkx as nx
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import random
 import itertools as it
 import sys
