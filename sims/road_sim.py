@@ -54,7 +54,6 @@ class RoadSim(mosaik_api_v3.Simulator):
         self.step_count += 1
         data = {}
         
-        # TODO: introduce scalability
         for eid, attrs in inputs.items():
             tl_dict = attrs.get('traffic_lights_in', {})
             if len(tl_dict) != 1:
