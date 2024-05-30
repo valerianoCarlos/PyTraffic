@@ -93,7 +93,7 @@ def create_scenario(world, n_intersections_per_side):
     mosaik.util.connect_many_to_one(world, roads, monitor, 'num_vehicles')
     
     # draw the intersection graph
-    draw_graph(grid)
+    # draw_graph(grid)
     
     # stop time monitoring
     end_init_time = time.time()
