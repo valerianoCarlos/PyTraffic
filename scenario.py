@@ -20,7 +20,7 @@ SIM_CONFIG = {
         'cmd': '%(python)s sims/collector.py %(addr)s',
     },
 }
-END = 1000                        # seconds of simulation time
+END = 500                         # seconds of simulation time
 MAX_VEHICLES_PER_ROAD = 20        # maximum number of vehicles per road
 SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 
