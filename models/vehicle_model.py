@@ -1,6 +1,6 @@
 import random
 
-N_DIRECTIONS_PER_VEHICLE = 2
+N_DIRECTIONS_PER_VEHICLE = 10
 
 
 class VehicleModel:
