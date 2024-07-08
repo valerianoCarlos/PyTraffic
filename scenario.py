@@ -20,8 +20,8 @@ SIM_CONFIG = {
         'cmd': '%(python)s sims/collector.py %(addr)s',
     },
 }
-END = 50                        # seconds of simulation time
-MAX_VEHICLES_PER_ROAD = 2       # maximum number of vehicles per road
+END = 500                         # seconds of simulation time
+MAX_VEHICLES_PER_ROAD = 20        # maximum number of vehicles per road
 SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 
 def main():
@@ -70,8 +70,7 @@ def main():
 
     
 def create_scenario(world, n_intersections_per_side):
-    
-    # start time monitorin
+    # start time monitoring
     start_init_time = time.time()
     
     # start simulators
@@ -219,7 +218,7 @@ def monitor_resources(stop_event, resource_data, interval=.5):
         # stop monitoring when interrupted
         pass
 
-    if memory_samples and cpu_samples:  # Ensure there are samples to prevent division by zero
+    if memory_samples and cpu_samples:
         avg_memory_usage = sum(memory_samples) / len(memory_samples)
         avg_cpu_usage = sum(cpu_samples) / len(cpu_samples)
         resource_data.extend([avg_memory_usage, avg_cpu_usage])
