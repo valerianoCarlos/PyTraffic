@@ -4,7 +4,7 @@ import os
 import sys
 
 # Constants
-SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
+SCALABILITY_MODES = ['no_scaling', 'no_scaling_nogil', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 N_INTERSECTIONS = '# Intersections'
 SETUP_TIME = 'Setup time'
 SIM_TIME = 'Simulation time'
