@@ -9,4 +9,4 @@ for n in "${intersections[@]}"; do
     ./run_simulation.sh $n $mode
 done
 
-python3 utility/generate_plots.py $mode
+# python3 utility/generate_plots.py $mode

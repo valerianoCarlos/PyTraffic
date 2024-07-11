@@ -149,7 +149,7 @@ def main():
     output_image_execution_time = os.path.join(root_folder, 'merged_benchmark_stats_execution_time.png')
     output_image_cpu_usage = os.path.join(root_folder, 'merged_benchmark_stats_cpu_usage.png')
     output_image_memory_usage = os.path.join(root_folder, 'merged_benchmark_stats_memory_usage.png')
-    desired_order = ["no scaling", "multithreading", "multithreading nogil", "multiprocessing", "ray"]
+    desired_order = ["no scaling", "no scaling nogil", "multithreading", "multithreading nogil", "multiprocessing", "ray"]
 
     merged_df = load_and_merge_data(root_folder, subfolders)
     save_merged_data(merged_df, output_file)
