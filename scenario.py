@@ -22,7 +22,7 @@ SIM_CONFIG = {
 }
 END = 500                         # seconds of simulation time
 MAX_VEHICLES_PER_ROAD = 20        # maximum number of vehicles per road
-SCALABILITY_MODES = ['no_scaling', 'no_scaling_nogil', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
+SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 
 def main():
     # check input parameters

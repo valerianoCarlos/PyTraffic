@@ -7,3 +7,11 @@ mosaik-api-v3==3.0.10
 networkx==3.3
 pydot==2.0.0
 newrelic==9.9.1
+
+
+# Dependencies that work on Ipazia server (uesi and nogil3.9 python environments)
+# matplotlib==3.7.3
+# mosaik==3.2.0
+# mosaik-api==3.0.3
+# mosaik-api-v3==3.0.10
+# networkx==3.1
