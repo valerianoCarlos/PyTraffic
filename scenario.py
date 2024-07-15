@@ -8,21 +8,8 @@ import sys
 import time
 import psutil
 import threading
+from utility.constants import SIM_CONFIG, END, MAX_VEHICLES_PER_ROAD, SCALABILITY_MODES
 
-SIM_CONFIG = {
-    'IntersectionSim': {
-        'python': 'sims.intersection_sim:IntersectionSim',
-    },
-    'RoadSim': {
-        'python': 'sims.road_sim:RoadSim', 
-    },
-    'Collector': {
-        'cmd': '%(python)s sims/collector.py %(addr)s',
-    },
-}
-END = 500                         # seconds of simulation time
-MAX_VEHICLES_PER_ROAD = 20        # maximum number of vehicles per road
-SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
 
 def main():
     # check input parameters

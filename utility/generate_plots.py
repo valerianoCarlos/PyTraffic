@@ -2,15 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import sys
-
-# Constants
-SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
-N_INTERSECTIONS = '# Intersections'
-SETUP_TIME = 'Setup time'
-SIM_TIME = 'Simulation time'
-TOT_TIME = 'Total execution time'
-CPU_USAGE = 'CPU usage'
-MEM_USAGE = 'Memory usage'
+from utility.constants import N_INTERSECTIONS, SETUP_TIME, SIM_TIME, CPU_USAGE, MEM_USAGE, SCALABILITY_MODES
 
 def read_csv_files(directory):
     data = []
@@ -79,7 +71,7 @@ def main():
         scalability_mode = sys.argv[1]
     
     if scalability_mode not in SCALABILITY_MODES:
-        raise ValueError('The scalability mode must be one of the following: no_scaling, multithreading, multithreading_nogil, multiprocessing, ray')
+        raise ValueError('Scalability mode not found')
         
     directory = f"data/{scalability_mode}"
     df = read_csv_files(directory)

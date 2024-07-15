@@ -1,3 +1,5 @@
+import numpy as np
+
 LIGHT_DURATION = 10    # seconds
 
 class IntersectionModel:
@@ -15,6 +17,9 @@ class IntersectionModel:
 
     def step(self, time_elapsed):
         if time_elapsed % LIGHT_DURATION == 0:
+            # simulate a heavy computation
+            for _ in range(10):
+                heavy_computation()
             for direction in self.traffic_lights:
                 if self.traffic_lights[direction] == 'green':
                     self.traffic_lights[direction] = 'red'
@@ -22,3 +27,13 @@ class IntersectionModel:
                     self.traffic_lights[direction] = 'green'
                 else:
                     raise ValueError('Invalid traffic light state: %s', self.traffic_lights[direction])
+
+def heavy_computation(it=5_000):
+    count = 0
+    rng = np.random.default_rng(seed=42)
+    for _ in range(it):
+        x, y = rng.random(2)
+        if x**2 + y**2 <= 1:
+            count += 1
+    pi = 4 * count / it
+    return pi
