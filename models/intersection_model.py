@@ -28,7 +28,7 @@ class IntersectionModel:
                 else:
                     raise ValueError('Invalid traffic light state: %s', self.traffic_lights[direction])
 
-def heavy_computation(it=5_000):
+def heavy_computation(it=1_000):
     count = 0
     rng = np.random.default_rng(seed=42)
     for _ in range(it):
