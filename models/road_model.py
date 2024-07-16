@@ -17,14 +17,14 @@ class RoadModel:
             vehicle_str = f"\n\t\t\t{vehicles_info}\n\t\t"
         else:
             vehicle_str = ""
-        adjacent_roads = ", ".join(str(road['direction'] + ': ' + road['road'].eid) for road in self.next_adjacent_roads)
+        adjacent_roads = ", ".join(str(road["direction"] + ": " + road["road"].eid) for road in self.next_adjacent_roads)
         return f"{self.eid}:\n\t\tdir={self.direction},\n\t\tnum_vehicles={self.num_vehicles},\n\t\tvehicles_queue=[{vehicle_str}],\n\t\tadjacent_roads=[{adjacent_roads}]"
 
     def step(self, traffic_lights_in):
         tl_direction = self.determine_traffic_light_direction()
-        if traffic_lights_in[tl_direction] == 'green' and len(self.vehicle_queue) > 0:
-            vehicle = self.remove_vehicle()                     # remove vehicle from this road's queue
-            next_direction = vehicle.get_next_direction()       # get next vehicle direction ('left', 'right', 'straight')
+        if traffic_lights_in[tl_direction] == "green" and len(self.vehicle_queue) > 0:
+            vehicle = self.remove_vehicle()                     # remove vehicle from this road"s queue
+            next_direction = vehicle.get_next_direction()       # get next vehicle direction ("left", "right", "straight")
             
             # if there is a next direction, transfer the vehicle to the next road
             if next_direction is not None:
@@ -39,14 +39,14 @@ class RoadModel:
                 del vehicle
             
     def determine_traffic_light_direction(self):
-        if self.direction == 'north':
-            return 'south'
-        elif self.direction == 'south':
-            return 'north'
-        elif self.direction == 'east':
-            return 'west'
-        elif self.direction == 'west':
-            return 'east'
+        if self.direction == "north":
+            return "south"
+        elif self.direction == "south":
+            return "north"
+        elif self.direction == "east":
+            return "west"
+        elif self.direction == "west":
+            return "east"
         else:
             return None
             
@@ -64,7 +64,7 @@ class RoadModel:
 
     def get_road_by_direction(self, direction):
         for adjacent_road in self.next_adjacent_roads:
-            if adjacent_road['direction'] == direction:
-                return adjacent_road['road']
+            if adjacent_road["direction"] == direction:
+                return adjacent_road["road"]
         return None
     

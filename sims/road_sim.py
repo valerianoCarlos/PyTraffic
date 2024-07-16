@@ -3,17 +3,17 @@ import models.road_model as road_model
 import json
 
 META = {
-    'type': 'event-based',
-    'models': {
-        'RoadModel': {
-            'public': True,
-            'params': ['direction', 'num_vehicles', 'next_adjacent_roads'],
-            'attrs': ['traffic_lights_in', 'num_vehicles'],
+    "type": "event-based",
+    "models": {
+        "RoadModel": {
+            "public": True,
+            "params": ["direction", "num_vehicles", "next_adjacent_roads"],
+            "attrs": ["traffic_lights_in", "num_vehicles"],
         },
     },
-    'extra_methods': [
-        'initialize_road_adjacencies',
-        'print_road_state',
+    "extra_methods": [
+        "initialize_road_adjacencies",
+        "print_road_state",
     ],
 }
 
@@ -21,7 +21,7 @@ META = {
 class RoadSim(mosaik_api_v3.Simulator):
     def __init__(self):
         super().__init__(META)
-        self.eid_prefix = 'Road_'
+        self.eid_prefix = "Road_"
         self.road_entities = {}
         self.vehicles_count = 0
         self.time = 0
@@ -32,20 +32,20 @@ class RoadSim(mosaik_api_v3.Simulator):
             road_model_instance = self.road_entities[eid]
             updated_adjacencies = []
             for adjacency in adjacencies:
-                road_instance = self.road_entities[adjacency['road']]   # get the RoadModel entity for the eid of the road
-                updated_adjacencies.append({'road': road_instance, 'direction': adjacency['direction']})
+                road_instance = self.road_entities[adjacency["road"]]   # get the RoadModel entity for the eid of the road
+                updated_adjacencies.append({"road": road_instance, "direction": adjacency["direction"]})
             road_model_instance.next_adjacent_roads = updated_adjacencies
-        self.print_road_state()
+        # self.print_road_state()
 
     def create(self, num, model, direction, num_vehicles):
         n_roads = len(self.road_entities)
         entities = []
         for i in range(n_roads, n_roads + num):
-            eid = '%s%d' % (self.eid_prefix, i)
+            eid = "%s%d" % (self.eid_prefix, i)
             model_instance = road_model.RoadModel(eid, direction, num_vehicles, self.vehicles_count)
             self.vehicles_count += num_vehicles
             self.road_entities[eid] = model_instance
-            entities.append({'eid': eid, 'type': model})
+            entities.append({"eid": eid, "type": model})
 
         return entities
 
@@ -55,43 +55,43 @@ class RoadSim(mosaik_api_v3.Simulator):
         data = {}
         
         for eid, attrs in inputs.items():
-            tl_dict = attrs.get('traffic_lights_in', {})
+            tl_dict = attrs.get("traffic_lights_in", {})
             if len(tl_dict) != 1:
-                raise RuntimeError('Only one ingoing connection allowed per road, but "%s" has %i.' % (eid, len(tl_dict)))
+                raise RuntimeError(f"Only one ingoing connection allowed per road, but {eid} has {len(tl_dict)}.")
             tl = list(tl_dict.values())[0]
             
             self.road_entities[eid].step(tl)
             
-            data[eid] = {'traffic_lights_in': tl}
+            data[eid] = {"traffic_lights_in": tl}
         
         self.data = data
-        self.print_road_state()
+        # self.print_road_state()
         return None
             
     def get_data(self, outputs):
         data = {}
         for eid, attrs in outputs.items():
             model = self.road_entities[eid]
-            data['time'] = self.time
+            data["time"] = self.time
             data[eid] = {}
             for attr in attrs:
-                if attr not in self.meta['models']['RoadModel']['attrs']:
-                    raise ValueError('Unknown output attribute: %s' % attr)
+                if attr not in self.meta["models"]["RoadModel"]["attrs"]:
+                    raise ValueError("Unknown output attribute: %s" % attr)
                 
                 data[eid][attr] = getattr(model, attr)
 
         return data
     
     def print_road_state(self):
-        with open('data/road_step_history.txt', 'a') as f:
-            f.write(f'Step_{self.step_count}:\n')
+        with open("data/road_step_history.txt", "a") as f:
+            f.write(f"Step_{self.step_count}:\n")
             for road in self.road_entities.values():
-                f.write('\t' + str(road))
-                f.write('\n\n')
+                f.write("\t" + str(road))
+                f.write("\n\n")
     
 
 def main():
     return mosaik_api_v3.start_simulation(RoadSim())
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

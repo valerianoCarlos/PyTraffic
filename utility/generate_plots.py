@@ -2,15 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import sys
-
-# Constants
-SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
-N_INTERSECTIONS = '# Intersections'
-SETUP_TIME = 'Setup time'
-SIM_TIME = 'Simulation time'
-TOT_TIME = 'Total execution time'
-CPU_USAGE = 'CPU usage'
-MEM_USAGE = 'Memory usage'
+from utility.constants import N_INTERSECTIONS, SETUP_TIME, SIM_TIME, CPU_USAGE, MEM_USAGE, SCALABILITY_MODES
 
 def read_csv_files(directory):
     data = []
@@ -32,12 +24,12 @@ def plot_time_measures(df, output_file):
     bar_width = 0.20
     bar_positions = range(len(intersections))
     
-    ax.bar(bar_positions, setup_time, bar_width, label='Setup Time')
-    ax.bar(bar_positions, simulation_time, bar_width, bottom=setup_time, label='Simulation Time')
+    ax.bar(bar_positions, setup_time, bar_width, label="Setup Time")
+    ax.bar(bar_positions, simulation_time, bar_width, bottom=setup_time, label="Simulation Time")
     
     ax.set_xlabel(N_INTERSECTIONS)
-    ax.set_ylabel('Time (seconds)')
-    ax.set_title('Setup and Simulation Time by Number of Intersections')
+    ax.set_ylabel("Time (seconds)")
+    ax.set_title("Setup and Simulation Time by Number of Intersections")
     ax.set_xticks(bar_positions)
     ax.set_xticklabels(intersections)
     ax.legend()
@@ -57,12 +49,12 @@ def plot_resource_usage(df, output_file):
     bar_width = 0.35
     bar_positions = range(len(intersections))
     
-    ax.bar([p - bar_width/2 for p in bar_positions], cpu_usage, bar_width, label='CPU Usage (%)')
-    ax.bar([p + bar_width/2 for p in bar_positions], memory_usage, bar_width, label='Memory Usage (%)')
+    ax.bar([p - bar_width/2 for p in bar_positions], cpu_usage, bar_width, label="CPU Usage (%)")
+    ax.bar([p + bar_width/2 for p in bar_positions], memory_usage, bar_width, label="Memory Usage (%)")
     
     ax.set_xlabel(N_INTERSECTIONS)
-    ax.set_ylabel('Resource Usage (%)')
-    ax.set_title('CPU and Memory Usage by Number of Intersections')
+    ax.set_ylabel("Resource Usage (%)")
+    ax.set_title("CPU and Memory Usage by Number of Intersections")
     ax.set_xticks(bar_positions)
     ax.set_xticklabels(intersections)
     ax.legend()
@@ -74,12 +66,12 @@ def plot_resource_usage(df, output_file):
 
 def main():
     if len(sys.argv) != 2:
-        raise ValueError('Scalability mode missing as argument')
+        raise ValueError("Scalability mode missing as argument")
     else:
         scalability_mode = sys.argv[1]
     
     if scalability_mode not in SCALABILITY_MODES:
-        raise ValueError('The scalability mode must be one of the following: no_scaling, multithreading, multithreading_nogil, multiprocessing, ray')
+        raise ValueError("Scalability mode not found")
         
     directory = f"data/{scalability_mode}"
     df = read_csv_files(directory)

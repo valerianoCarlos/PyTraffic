@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# modes = ("no_scaling" "no_scaling_nogil" "multithreading" "multithreading_nogil" "multiprocessing" "ray")
+# modes = ("no_scaling" "multithreading" "multithreading_nogil" "multiprocessing" "ray")
 
-mode="no_scaling"
+mode="ray"
 intersections=(5 10 25 50)
 
 for n in "${intersections[@]}"; do

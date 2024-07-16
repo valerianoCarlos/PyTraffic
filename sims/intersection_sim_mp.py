@@ -1,5 +1,6 @@
 import mosaik_api_v3
 import models.intersection_model as intersection_model
+from joblib import Parallel, delayed
 
 META = {
     "type": "time-based",
@@ -11,7 +12,6 @@ META = {
         },
     },
 }
-
 
 class IntersectionSim(mosaik_api_v3.Simulator):
     def __init__(self):
@@ -39,9 +39,14 @@ class IntersectionSim(mosaik_api_v3.Simulator):
 
     def step(self, time, inputs, max_advance):
         self.time = time
-        
-        for eid, model_instance in self.entities.items():
-            model_instance.step(time)
+        entities_data = [(eid, self.entities[eid]) for eid in self.entities]
+
+        results = Parallel(n_jobs=-1)(
+            delayed(step_model)(eid, entity, time) for eid, entity in entities_data
+        )
+
+        for eid, model_instance in results:
+            self.entities[eid] = model_instance
 
         return time + 1
 
@@ -57,10 +62,12 @@ class IntersectionSim(mosaik_api_v3.Simulator):
                 data[eid][attr] = getattr(model, attr)
         return data
 
+def step_model(eid, model_instance, time):
+    model_instance.step(time)
+    return eid, model_instance
 
 def main():
     return mosaik_api_v3.start_simulation(IntersectionSim())
-
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 import mosaik_api_v3
 import models.intersection_model as intersection_model
+import ray
 
 META = {
     "type": "time-based",
@@ -11,7 +12,6 @@ META = {
         },
     },
 }
-
 
 class IntersectionSim(mosaik_api_v3.Simulator):
     def __init__(self):
@@ -39,9 +39,14 @@ class IntersectionSim(mosaik_api_v3.Simulator):
 
     def step(self, time, inputs, max_advance):
         self.time = time
+
+        entity_ids = list(self.entities.keys())
+        entity_refs = [step_model.remote(eid, self.entities[eid], time) for eid in entity_ids]
         
-        for eid, model_instance in self.entities.items():
-            model_instance.step(time)
+        results = ray.get(entity_refs)
+
+        for eid, model_instance in results:
+            self.entities[eid] = model_instance
 
         return time + 1
 
@@ -57,10 +62,14 @@ class IntersectionSim(mosaik_api_v3.Simulator):
                 data[eid][attr] = getattr(model, attr)
         return data
 
+@ray.remote
+def step_model(eid, model_instance, time):
+    model_instance.step(time)
+    return eid, model_instance
 
 def main():
+    ray.init(ignore_reinit_error=True)
     return mosaik_api_v3.start_simulation(IntersectionSim())
-
 
 if __name__ == "__main__":
     main()

@@ -5,8 +5,8 @@ N_DIRECTIONS_PER_VEHICLE = 10
 
 class VehicleModel:
     def __init__(self, init_road, id):
-        self.eid = f'Vehicle_{id}'
-        self.directions = [random.choice(['straight', 'left', 'right']) for _ in range(N_DIRECTIONS_PER_VEHICLE)]
+        self.eid = f"Vehicle_{id}"
+        self.directions = [random.choice(["straight", "left", "right"]) for _ in range(N_DIRECTIONS_PER_VEHICLE)]
         self.curr_road = init_road   # eid of the road in which the vehicle is currently located
         self.arrived = False
         

@@ -1,28 +1,14 @@
 import mosaik
 import mosaik.util
 import networkx as nx
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import random
 import itertools as it
 import sys
 import time
 import psutil
 import threading
-
-SIM_CONFIG = {
-    'IntersectionSim': {
-        'python': 'sims.intersection_sim:IntersectionSim',
-    },
-    'RoadSim': {
-        'python': 'sims.road_sim:RoadSim', 
-    },
-    'Collector': {
-        'cmd': '%(python)s sims/collector.py %(addr)s',
-    },
-}
-END = 500                         # seconds of simulation time
-MAX_VEHICLES_PER_ROAD = 20        # maximum number of vehicles per road
-SCALABILITY_MODES = ['no_scaling', 'multithreading', 'multithreading_nogil', 'multiprocessing', 'ray']
+from utility.constants import SIM_CONFIG_NS, SIM_CONFIG_MT, SIM_CONFIG_MP, SIM_CONFIG_RAY, END, MAX_VEHICLES_PER_ROAD, SCALABILITY_MODES
 
 def main():
     # check input parameters
@@ -30,13 +16,13 @@ def main():
         n_intersections_per_side = int(sys.argv[1])
         scalability_mode = sys.argv[2]
     else:
-        raise ValueError('To run the simulation, provide the number of intersections per side and the scalability mode as command line arguments')
+        raise ValueError("To run the simulation, provide the number of intersections per side and the scalability mode as command line arguments")
     
     if n_intersections_per_side < 2:
-        raise ValueError('The number of intersections per side must be at least 2')
+        raise ValueError("The number of intersections per side must be at least 2")
     
     if scalability_mode not in SCALABILITY_MODES:
-        raise ValueError('The scalability mode must be one of the following: no_scaling, multithreading, multithreading_nogil, multiprocessing, ray')
+        raise ValueError("Invalid scalability mode")
     
     # start resource monitoring in a separate thread
     stop_event = threading.Event()
@@ -48,7 +34,8 @@ def main():
     start_tot_time = time.time()
     
     # run simulation
-    world = mosaik.World(SIM_CONFIG)
+    sim_config = set_simulation_config(scalability_mode)
+    world = mosaik.World(sim_config)
     grid, setup_time = create_scenario(world, n_intersections_per_side)   
     world.run(until=END)
     stop_event.set()
@@ -64,19 +51,29 @@ def main():
     avg_memory_usage, avg_cpu_usage = resource_data
     
     # write simulation statistics to a CSV file
-    with open(f"data/{scalability_mode}/benchmark_stats_{n_intersections_per_side}.csv", 'w') as file:
+    with open(f"data/{scalability_mode}/benchmark_stats_{n_intersections_per_side}.csv", "w") as file:
         file.write("# Intersections,# Roads,Setup time,Simulation time,Total execution time,CPU usage,Memory usage\n")
         file.write(f"{n_intersections_per_side**2},{n_roads},{setup_time:.2f},{sim_time:.2f},{exec_time:.2f},{avg_cpu_usage:.2f},{avg_memory_usage:.2f}\n")
 
+def set_simulation_config(scalability_mode):
+    if scalability_mode == "no_scaling":
+        return SIM_CONFIG_NS
+    elif scalability_mode == "multithreading" or scalability_mode == "multithreading_nogil":
+        return SIM_CONFIG_MT
+    elif scalability_mode == "multiprocessing":
+        return SIM_CONFIG_MP
+    elif scalability_mode == "ray":
+        return SIM_CONFIG_RAY
+    return "Invalid scalability mode"
     
 def create_scenario(world, n_intersections_per_side):
     # start time monitoring
     start_init_time = time.time()
     
     # start simulators
-    intersection_sim = world.start('IntersectionSim')
-    road_sim = world.start('RoadSim')
-    collector = world.start('Collector')
+    intersection_sim = world.start("IntersectionSim")
+    road_sim = world.start("RoadSim")
+    collector = world.start("Collector")
     
     # instantiate models
     grid = instantiate_intersection_graph(n_intersections_per_side)
@@ -88,8 +85,8 @@ def create_scenario(world, n_intersections_per_side):
     road_sim.initialize_road_adjacencies(adjacency_map)
     
     # connect entities
-    mosaik.util.connect_many_to_one(world, intersections, monitor, 'traffic_lights')
-    mosaik.util.connect_many_to_one(world, roads, monitor, 'num_vehicles')
+    mosaik.util.connect_many_to_one(world, intersections, monitor, "traffic_lights")
+    mosaik.util.connect_many_to_one(world, roads, monitor, "num_vehicles")
     
     # draw the intersection graph
     # draw_graph(grid)
@@ -111,8 +108,8 @@ def instantiate_intersections(grid, intersection_sim):
     
     for node in grid.nodes():
         new_intersection = intersection_sim.IntersectionModel()
-        grid.nodes[node]['intersection'] = new_intersection
-        grid.nodes[node]['label'] = new_intersection.eid
+        grid.nodes[node]["intersection"] = new_intersection
+        grid.nodes[node]["label"] = new_intersection.eid
         intersections.append(new_intersection)
     return intersections
 
@@ -125,49 +122,49 @@ def instantiate_roads(world, grid, road_sim):
         road_direction = determine_direction(u, v)      # determine the direction from which of the road is coming
         num_vehicles = random.randint(0, MAX_VEHICLES_PER_ROAD)     # instantiate a random number of vehicles between 0 and MAX for each road
         new_road = road_sim.RoadModel(direction=road_direction, num_vehicles=num_vehicles)
-        grid.edges[u, v, 0]['road'] = new_road
-        grid.edges[u, v, 0]['label'] = new_road.eid
+        grid.edges[u, v, 0]["road"] = new_road
+        grid.edges[u, v, 0]["label"] = new_road.eid
         roads.append(new_road)
-        dest_intersection = grid.nodes[v]['intersection']   # get the destination intersection
-        world.connect(dest_intersection, new_road, ('traffic_lights', 'traffic_lights_in'))   # connect the road to the corresponding destination intersection
+        dest_intersection = grid.nodes[v]["intersection"]   # get the destination intersection
+        world.connect(dest_intersection, new_road, ("traffic_lights", "traffic_lights_in"))   # connect the road to the corresponding destination intersection
     
     # create the adjacency map for each road to know the next road in each direction
     for u, v, data in grid.edges(data=True):
         current_direction = determine_direction(u, v)
-        eid = grid.edges[u, v, 0]['label']
+        eid = grid.edges[u, v, 0]["label"]
         adjacency_list = []
         for w in grid.successors(v):
             if w != u:
                 adj_direction = determine_direction(v, w)
                 relative_direction = calculate_relative_direction(current_direction, adj_direction)
-                adj_eid = grid.edges[v, w, 0]['label']
-                adjacency_list.append({'road': adj_eid, 'direction': relative_direction})
+                adj_eid = grid.edges[v, w, 0]["label"]
+                adjacency_list.append({"road": adj_eid, "direction": relative_direction})
         adjacency_map[eid] = adjacency_list
     return roads, adjacency_map
 
 
 def determine_direction(u, v):
     if u[0] < v[0]:
-        return 'south'
+        return "south"
     elif u[0] > v[0]:
-        return 'north'
+        return "north"
     elif u[1] < v[1]:
-        return 'east' 
+        return "east" 
     elif u[1] > v[1]:
-        return 'west' 
+        return "west" 
     
     
 def calculate_relative_direction(current_direction, adj_direction):
-    directions = ['north', 'east', 'south', 'west']
+    directions = ["north", "east", "south", "west"]
     idx_current = directions.index(current_direction)
     idx_adj = directions.index(adj_direction)
     relative_idx = (idx_adj - idx_current) % 4
     if relative_idx == 1:
-        return 'right'
+        return "right"
     elif relative_idx == 3:
-        return 'left'
+        return "left"
     else:
-        return 'straight'
+        return "straight"
 
 
 def draw_graph(grid):
@@ -176,10 +173,10 @@ def draw_graph(grid):
     connectionstyle = [f"arc3,rad={r}" for r in it.accumulate([0.15] * 4)]
     
     # draw nodes
-    nx.draw_networkx_nodes(grid, pos, node_color='lightgreen', node_size=600)
+    nx.draw_networkx_nodes(grid, pos, node_color="lightgreen", node_size=600)
     
     # draw node labels
-    node_labels = {node: grid.nodes[node]['label'] for node in grid.nodes()}
+    node_labels = {node: grid.nodes[node]["label"] for node in grid.nodes()}
     nx.draw_networkx_labels(grid, pos=pos, labels=node_labels, font_size=8)
     
     # draw edges
@@ -197,12 +194,12 @@ def draw_graph(grid):
         connectionstyle=connectionstyle,
         label_pos=0.3,
         font_size=8,
-        font_color='blue',
+        font_color="blue",
         bbox={"alpha": 0}
     )
-    plt.axis('equal')
-    plt.savefig('images/grid.png')
-    nx.drawing.nx_pydot.write_dot(grid, 'images/graph.dot')
+    plt.axis("equal")
+    plt.savefig("images/grid.png")
+    nx.drawing.nx_pydot.write_dot(grid, "images/graph.dot")
     
     
 def monitor_resources(stop_event, resource_data, interval=.5):
@@ -226,5 +223,5 @@ def monitor_resources(stop_event, resource_data, interval=.5):
         resource_data.extend([0, 0])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
