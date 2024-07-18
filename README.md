@@ -4,16 +4,48 @@ A Python simulation model of a traffic intersection implemented with the Mosaik 
 
 ## How to run
 
-To run the simulation, you need to specify the number of intersections per side as a command line argument. Use the provided Bash script to handle setup and execution:
+To run a single simulation, you need to specify the number of intersections per side as a command line argument. Use the provided Bash script to handle setup and execution:
 
 ```sh
-$ ./run_simulation.sh <number_of_intersections_per_side>
+$ ./run_simulation.sh <number_of_intersections_per_side> <scalability_mode>
 ```
 
-For example, to run a simulation with a 4x4 grid of intersections:
+For example, to run a simulation with a 4x4 grid of intersections without using a scalability technique:
 
 ```sh
-$ ./run_simulation.sh 4
+$ ./run_simulation.sh 4 "no_scaling"
+```
+
+The full list of scalability modes available can be found in the file utility/constants.py
+
+### Running benchmark tests
+
+To launch the benchmark tests, the `run_benchmark.sh` script can be used by typing the following command on the console:
+
+```sh
+$ ./run_benchmarks.sh <scalability_mode>
+```
+
+or simply by running this command through the Makefile:
+
+```sh
+$ make test
+```
+
+### Generating plots
+
+Once all the benchmark tests have been run, you can generate bar charts in order to visualize the obtained results. To do so run the following command:
+
+```sh
+$ ./plot_data.sh <mode>
+```
+
+where `mode` is either `low` or `high` depending on the approach tested.
+
+Again, a shortcut command can be used to launch that script:
+
+```sh
+$ make plot
 ```
 
 ## Requirements
