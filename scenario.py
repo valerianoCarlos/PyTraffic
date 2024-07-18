@@ -1,14 +1,17 @@
 import mosaik
 import mosaik.util
 import networkx as nx
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import random
 import itertools as it
 import sys
 import time
 import psutil
 import threading
-from utility.constants import SIM_CONFIG_NS, SIM_CONFIG_MT, SIM_CONFIG_MP, SIM_CONFIG_RAY, END, MAX_VEHICLES_PER_ROAD, SCALABILITY_MODES
+from utility.constants import (
+    SIM_CONFIG_NS, SIM_CONFIG_MT, SIM_CONFIG_MP, SIM_CONFIG_RAY, SIM_CONFIG_NS_HIGH, SIM_CONFIG_MT_HIGH, SIM_CONFIG_MP_HIGH, SIM_CONFIG_RAY_HIGH,
+    END, MAX_VEHICLES_PER_ROAD, SCALABILITY_MODES                           
+)
 
 def main():
     # check input parameters
@@ -64,6 +67,14 @@ def set_simulation_config(scalability_mode):
         return SIM_CONFIG_MP
     elif scalability_mode == "ray":
         return SIM_CONFIG_RAY
+    elif scalability_mode == "no_scaling_high":
+        return SIM_CONFIG_NS_HIGH
+    elif scalability_mode == "multithreading_high" or scalability_mode == "multithreading_nogil_high":
+        return SIM_CONFIG_MT_HIGH
+    elif scalability_mode == "multiprocessing_high":
+        return SIM_CONFIG_MP_HIGH
+    elif scalability_mode == "ray_high":
+        return SIM_CONFIG_RAY_HIGH
     return "Invalid scalability mode"
     
 def create_scenario(world, n_intersections_per_side):

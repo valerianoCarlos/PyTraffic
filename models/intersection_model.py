@@ -1,4 +1,4 @@
-LIGHT_DURATION = 10    # seconds
+from utility.constants import LIGHT_DURATION
 
 class IntersectionModel:
     def __init__(self, eid):

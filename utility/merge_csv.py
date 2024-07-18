@@ -144,12 +144,12 @@ def plot_memory_usage(data, desired_order, output_image):
 
 def main():
     root_folder = "data"
-    subfolders = ["no_scaling", "multithreading", "multithreading_nogil", "multiprocessing", "ray"]
+    subfolders = ["no_scaling_high", "multithreading_high", "multithreading_nogil_high", "multiprocessing_high", "ray_high"]
     output_file = os.path.join(root_folder, "merged_benchmark_stats.csv")
-    output_image_execution_time = os.path.join(root_folder, "merged_benchmark_stats_execution_time.png")
-    output_image_cpu_usage = os.path.join(root_folder, "merged_benchmark_stats_cpu_usage.png")
-    output_image_memory_usage = os.path.join(root_folder, "merged_benchmark_stats_memory_usage.png")
-    desired_order = ["no scaling", "multithreading", "multithreading nogil", "multiprocessing", "ray"]
+    output_image_execution_time = os.path.join(root_folder, "high_merged_benchmark_stats_execution_time.png")
+    output_image_cpu_usage = os.path.join(root_folder, "high_merged_benchmark_stats_cpu_usage.png")
+    output_image_memory_usage = os.path.join(root_folder, "high_merged_benchmark_stats_memory_usage.png")
+    desired_order = ["no scaling high", "multithreading high", "multithreading nogil high", "multiprocessing high", "ray high"]
 
     merged_df = load_and_merge_data(root_folder, subfolders)
     save_merged_data(merged_df, output_file)
