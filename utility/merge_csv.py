@@ -1,7 +1,23 @@
 import os
+import sys
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
+from constants import ( 
+    DATA_FOLDER,
+    DATA_SUBFOLDERS_LOW,
+    DATA_SUBFOLDERS_HIGH,
+    MERGED_STATS_FILE_LOW,
+    MERGED_STATS_FILE_HIGH,
+    IMAGE_EXECUTION_TIME_LOW,
+    IMAGE_EXECUTION_TIME_HIGH,
+    IMAGE_CPU_USAGE_LOW,
+    IMAGE_CPU_USAGE_HIGH,
+    IMAGE_MEM_USAGE_LOW,
+    IMAGE_MEM_USAGE_HIGH,
+    ORDER_LOW,
+    ORDER_HIGH
+)
 
 def load_and_merge_data(root_folder, subfolders):
     """
@@ -143,13 +159,30 @@ def plot_memory_usage(data, desired_order, output_image):
     plt.close()
 
 def main():
-    root_folder = "data"
-    subfolders = ["no_scaling_high", "multithreading_high", "multithreading_nogil_high", "multiprocessing_high", "ray_high"]
-    output_file = os.path.join(root_folder, "merged_benchmark_stats.csv")
-    output_image_execution_time = os.path.join(root_folder, "high_merged_benchmark_stats_execution_time.png")
-    output_image_cpu_usage = os.path.join(root_folder, "high_merged_benchmark_stats_cpu_usage.png")
-    output_image_memory_usage = os.path.join(root_folder, "high_merged_benchmark_stats_memory_usage.png")
-    desired_order = ["no scaling high", "multithreading high", "multithreading nogil high", "multiprocessing high", "ray high"]
+    if len(sys.argv) != 2:
+        raise ValueError("Usage: python merge_csv.py <mode>")
+    
+    mode = sys.argv[1]
+    root_folder = DATA_FOLDER
+    
+    if mode == "low":
+        subfolders = DATA_SUBFOLDERS_LOW
+        output_file = os.path.join(root_folder, MERGED_STATS_FILE_LOW)
+        output_image_execution_time = os.path.join(root_folder, IMAGE_EXECUTION_TIME_LOW)
+        output_image_cpu_usage = os.path.join(root_folder, IMAGE_CPU_USAGE_LOW)
+        output_image_memory_usage = os.path.join(root_folder, IMAGE_MEM_USAGE_LOW)
+        desired_order = ORDER_LOW
+    
+    elif mode == "high":
+        subfolders = DATA_SUBFOLDERS_HIGH
+        output_file = os.path.join(root_folder, MERGED_STATS_FILE_HIGH)
+        output_image_execution_time = os.path.join(root_folder, IMAGE_EXECUTION_TIME_HIGH)
+        output_image_cpu_usage = os.path.join(root_folder, IMAGE_CPU_USAGE_HIGH)
+        output_image_memory_usage = os.path.join(root_folder, IMAGE_MEM_USAGE_HIGH)
+        desired_order = ORDER_HIGH
+    
+    else:
+        raise ValueError("Invalid mode. Use 'low' or 'high'.")
 
     merged_df = load_and_merge_data(root_folder, subfolders)
     save_merged_data(merged_df, output_file)

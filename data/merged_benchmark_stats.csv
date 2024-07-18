@@ -1,0 +1,21 @@
+Technique,# Intersections,# Roads,Setup time,Simulation time,Total execution time,CPU usage,Memory usage
+no scaling,25,80,0.06,1.09,1.15,12.6,75.7
+no scaling,100,360,0.08,1.71,1.8,15.15,76.4
+no scaling,2500,9800,1.07,37.97,39.04,16.09,79.16
+no scaling,625,2400,0.25,7.24,7.49,12.25,76.66
+multithreading,25,80,0.06,1.13,1.19,11.6,79.15
+multithreading,100,360,0.08,1.8,1.88,15.5,78.25
+multithreading,2500,9800,0.97,39.06,40.03,13.86,80.77
+multithreading,625,2400,0.25,7.69,7.94,12.53,79.85
+multithreading nogil,25,80,0.06,1.38,1.44,15.55,77.6
+multithreading nogil,100,360,0.09,2.12,2.21,12.8,77.6
+multithreading nogil,2500,9800,1.18,40.13,41.31,17.83,81.11
+multithreading nogil,625,2400,0.3,9.14,9.43,10.79,78.12
+multiprocessing,25,80,0.07,8.82,8.89,25.9,73.02
+multiprocessing,100,360,0.09,9.27,9.36,29.67,72.71
+multiprocessing,2500,9800,0.99,73.62,74.61,15.48,74.86
+multiprocessing,625,2400,0.27,21.67,21.94,19.11,73.8
+ray,25,80,2.76,5.7,8.45,12.83,73.51
+ray,100,360,0.2,9.23,9.43,43.5,73.44
+ray,2500,9800,1.11,180.78,181.89,49.89,76.81
+ray,625,2400,0.39,43.22,43.6,54.6,75.67

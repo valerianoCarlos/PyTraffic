@@ -121,3 +121,22 @@ SIM_TIME = "Simulation time"
 TOT_TIME = "Total execution time"
 CPU_USAGE = "CPU usage"
 MEM_USAGE = "Memory usage"
+
+DATA_FOLDER = "data"
+DATA_SUBFOLDERS_LOW = ["no_scaling", "multithreading", "multithreading_nogil", "multiprocessing", "ray"]
+DATA_SUBFOLDERS_HIGH = ["no_scaling_high", "multithreading_high", "multithreading_nogil_high", "multiprocessing_high", "ray_high"]
+
+MERGED_STATS_FILE_LOW = "merged_benchmark_stats.csv"
+MERGED_STATS_FILE_HIGH = "merged_benchmark_stats_high.csv"
+
+IMAGE_EXECUTION_TIME_LOW = "merged_benchmark_stats_execution_time.png"
+IMAGE_EXECUTION_TIME_HIGH = "merged_benchmark_stats_execution_time_high.png"
+
+IMAGE_CPU_USAGE_LOW = "merged_benchmark_stats_cpu_usage.png"
+IMAGE_CPU_USAGE_HIGH = "merged_benchmark_stats_cpu_usage_high.png"
+
+IMAGE_MEM_USAGE_LOW = "merged_benchmark_stats_memory_usage.png"
+IMAGE_MEM_USAGE_HIGH = "merged_benchmark_stats_memory_usage_high.png"
+
+ORDER_LOW = ["no scaling", "multithreading", "multithreading nogil", "multiprocessing", "ray"]
+ORDER_HIGH = ["no scaling high", "multithreading high", "multithreading nogil high", "multiprocessing high", "ray high"]
